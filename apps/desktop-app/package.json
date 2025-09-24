@@ -1,4 +1,8 @@
 {
+  "name": "bros-desktop",
+  "version": "0.1.0",
+  "description": "Electron app to design ROS 2 graphs with drag-and-drop blocks, auto-generate packages/launch files, and run sims with live introspection.",
+  "author": "nhathout11@gmail.com",
   "type": "module",
   "scripts": {
     "dev": "vite --config src/renderer/vite.config.ts",
