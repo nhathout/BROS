@@ -13,6 +13,19 @@
     "build": "pnpm build:main && electron-builder",
     "postinstall": "node node_modules/electron/install.js"
   },
+  "build": {
+    "appId": "com.bros.desktop",
+    "productName": "BROS Desktop",
+    "directories": {
+      "output": "release"
+    },
+    "files": [
+      "dist/**/*",
+      "node_modules/**/*",
+      "package.json",
+      "!dist/linux-unpacked{,/**}"
+    ]
+  },
   "devDependencies": {
     "@electron/rebuild": "^4.0.1",
     "@types/node": "^24.5.2",
