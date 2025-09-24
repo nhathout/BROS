@@ -28,8 +28,7 @@
     "typecheck": "pnpm -r typecheck",
     "ci": "pnpm install --frozen-lockfile && pnpm -r test",
     "bootstrap": "pnpm install -r",
-    "preinstall": "node -e \"const semver=require('semver'); if(!semver.satisfies(process.version, '20.19.x')) { console.error(`\n Wrong Node version: ${process.version}. Please run 'nvm use'.\\n`); process.exit(1); }\""
-
+    "preinstall": "node -e \"const semver=require('semver'); if(!semver.satisfies(process.version, '20.19.x')) { console.error('\\n Wrong Node version: ' + process.version + '. Please run \\'nvm use\\'.\\n'); process.exit(1); }\""
   },
   "keywords": [
     "ROS2",
