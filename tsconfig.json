@@ -1,0 +1,21 @@
+{
+  "compilerOptions": {
+    "target": "ES2022",                    // modern JS output
+    "module": "NodeNext",                  // ES module system
+    "moduleResolution": "NodeNext",        // how imports are resolved
+    "lib": ["ES2022", "DOM"],              // standard libraries (browser + modern JS)
+    "jsx": "react-jsx",                    // enable React JSX transform
+    "strict": true,                        // enable all strict checks
+    "esModuleInterop": true,               // smoother interop with CommonJS
+    "skipLibCheck": true,                  // speed up builds, skip d.ts checks
+    "forceConsistentCasingInFileNames": true,
+    "baseUrl": ".",                        // allow absolute imports from root
+    "paths": {
+      "@bros/shared/*": ["packages/shared/*"],   // example path alias
+      "@bros/ui/*": ["packages/ui/*"]
+    },
+    "outDir": "dist"                       // compiled output (per package)
+  },
+  "include": ["apps", "packages", "tools"],
+  "exclude": ["node_modules", "dist", "build"]
+}

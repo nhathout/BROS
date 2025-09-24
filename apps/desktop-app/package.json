@@ -1,0 +1,28 @@
+{
+  "type": "module",
+  "scripts": {
+    "dev": "vite --config src/renderer/vite.config.ts",
+    "electron:dev": "cross-env NODE_ENV=development node --loader ts-node/esm src/main.ts",
+    "electron:prod": "cross-env NODE_ENV=production electron ./dist/main.js",
+    "build:main": "tsc -p tsconfig.json --outDir dist",
+    "build": "pnpm build:main && electron-builder",
+    "postinstall": "node node_modules/electron/install.js"
+  },
+  "devDependencies": {
+    "@electron/rebuild": "^4.0.1",
+    "@types/node": "^24.5.2",
+    "@types/react": "^19.1.13",
+    "@types/react-dom": "^19.1.9",
+    "@vitejs/plugin-react": "^5.0.3",
+    "cross-env": "^10.0.0",
+    "electron": "38.1.2",
+    "electron-builder": "^26.0.12",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.9.2",
+    "vite": "^7.1.7"
+  },
+  "dependencies": {
+    "react": "^19.1.1",
+    "react-dom": "^19.1.1"
+  }
+}
