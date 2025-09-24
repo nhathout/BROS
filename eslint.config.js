@@ -1,4 +1,5 @@
 import tseslint from "typescript-eslint";
+import reactPlugin from "eslint-plugin-react";
 
 export default tseslint.config({
   files: ["**/*.ts", "**/*.tsx"],
@@ -10,13 +11,17 @@ export default tseslint.config({
   },
   plugins: {
     "@typescript-eslint": tseslint.plugin,
-    "react": require("eslint-plugin-react")
+    react: reactPlugin
+  },
+  settings: {
+    react: {
+      version: "detect"
+    }
   },
   rules: {
-    "semi": ["error", "always"],
-    "quotes": ["error", "double"],
+    semi: ["error", "always"],
+    quotes: ["error", "double"],
     "@typescript-eslint/no-unused-vars": "warn",
     "react/react-in-jsx-scope": "off"
   }
 });
-
