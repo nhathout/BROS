@@ -1,12 +1,15 @@
 import { z } from "zod";
-export const LangSchema = z.enum(["python", "cpp"]);
 const TopicTypePattern = /^[A-Za-z][A-Za-z0-9_]*\/[A-Za-z][A-Za-z0-9_]*\/[A-Za-z][A-Za-z0-9_]*$/;
 const TopicNamePattern = /^\/?[A-Za-z0-9_\/]+$/;
-export const TopicRefSchema = z.object({
+export const LangSchema = z.enum(["python", "cpp"]);
+export const TopicRefSchema = z
+    .object({
     topic: z.string().regex(TopicNamePattern, "Invalid ROS 2 topic name"),
     type: z.string().regex(TopicTypePattern, "Invalid ROS 2 message type")
-});
-export const NodeSchema = z.object({
+})
+    .strict();
+export const NodeSchema = z
+    .object({
     id: z.string().min(1),
     name: z.string().min(1),
     package: z.string().min(1),
@@ -16,12 +19,17 @@ export const NodeSchema = z.object({
     params: z.record(z.unknown()).optional(),
     pubs: z.array(TopicRefSchema).optional(),
     subs: z.array(TopicRefSchema).optional()
-});
-export const PackageSchema = z.object({
+})
+    .strict();
+export const PackageSchema = z
+    .object({
     name: z.string().min(1),
     lang: LangSchema,
     nodes: z.array(NodeSchema)
-});
-export const IRSchema = z.object({
+})
+    .strict();
+export const IRSchema = z
+    .object({
     packages: z.array(PackageSchema)
-});
+})
+    .strict();

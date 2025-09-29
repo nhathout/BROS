@@ -28,3 +28,4 @@ pnpm-lock.yaml
 # Secrets / environment
 .env
 *.env
+apps/desktop-app/.env

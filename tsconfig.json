@@ -1,26 +1,25 @@
 {
   "compilerOptions": {
-    "target": "ES2022",                    // modern JS output
-    "module": "NodeNext",                  // ES module system
-    "moduleResolution": "NodeNext",        // how imports are resolved
-    "lib": ["ES2022", "DOM"],              // standard libraries (browser + modern JS)
-    "jsx": "react-jsx",                    // enable React JSX transform
-    "strict": true,                        // enable all strict checks
-    "esModuleInterop": true,               // smoother interop with CommonJS
-    "skipLibCheck": true,                  // speed up builds, skip d.ts checks
+    "target": "ES2022",
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
+    "jsx": "react-jsx",
+    "strict": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
-    "baseUrl": ".",                        // allow absolute imports from root
+    "baseUrl": ".",
     "paths": {
-      "@bros/shared": ["packages/shared/dist/index.d.ts"],
-      "@bros/shared/*": ["packages/shared/dist/*"],
-      "@bros/ui": ["packages/ui/dist/index.d.ts"],
-      "@bros/ui/*": ["packages/ui/dist/*"],
-      "@bros/validation": ["packages/services/validation/dist/index.d.ts"],
-      "@bros/validation/*": ["packages/services/validation/dist/*"],
-      "@bros/runner": ["packages/services/runner/dist/index.d.ts"],
-      "@bros/runner/*": ["packages/services/runner/dist/*"]
-    },
-    "outDir": "dist"                       // compiled output (per package)
+      "@bros/shared": ["packages/shared/src/index.ts"],
+      "@bros/shared/*": ["packages/shared/src/*"],
+      "@bros/ui": ["packages/ui/src/index.ts"],
+      "@bros/ui/*": ["packages/ui/src/*"],
+      "@bros/validation": ["packages/services/validation/src/index.ts"],
+      "@bros/validation/*": ["packages/services/validation/src/*"],
+      "@bros/runner": ["packages/services/runner/src/index.ts"],
+      "@bros/runner/*": ["packages/services/runner/src/*"],
+      "@/*": ["apps/desktop-app/src/renderer/*"]
+    }
   },
   "include": ["apps", "packages", "tools"],
   "exclude": ["node_modules", "dist", "build"]

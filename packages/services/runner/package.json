@@ -12,11 +12,9 @@
       "default": "./dist/index.js"
     }
   },
-  "files": [
-    "dist"
-  ],
+  "files": ["dist"],
   "scripts": {
-    "build": "tsc -b",
+    "build": "pnpm clean && tsc -b",
     "clean": "rimraf dist tsconfig.tsbuildinfo",
     "dev": "tsc -p tsconfig.json --watch"
   },
