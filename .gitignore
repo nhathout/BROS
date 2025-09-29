@@ -24,3 +24,6 @@ Thumbs.db
 # Generated
 pnpm-lock.yaml
 
+# root .gitignore
+.env
+apps/desktop-app/.env

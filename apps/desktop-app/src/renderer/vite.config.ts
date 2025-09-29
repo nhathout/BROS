@@ -5,7 +5,7 @@ import path from "path";
 export default defineConfig({
   root: path.resolve(__dirname),
   base: "./",
-  plugins: [react()],
+  plugins: [react({})],  // <-- fix: pass empty object
   build: {
     outDir: "../../dist/renderer",
     emptyOutDir: true,

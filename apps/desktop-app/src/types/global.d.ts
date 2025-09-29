@@ -1,13 +1,9 @@
-import type { ExecResult } from "@bros/runner";
+export {};
 
 declare global {
   interface Window {
-    runner: {
-      up(projectName: string): Promise<void>;
-      exec(command: string): Promise<ExecResult>;
-      down(): Promise<void>;
+    electron: {
+      login: () => Promise<{ success: boolean; error?: string }>;
     };
   }
 }
-
-export {};
