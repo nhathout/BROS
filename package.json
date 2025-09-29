@@ -3,6 +3,10 @@
   "private": true,
   "version": "0.1.0",
   "description": "BROS — Block ROS (Drag. Drop. Deploy.)",
+  "workspaces": [
+    "apps/*",
+    "packages/*/*"
+  ],
   "license": "Apache-2.0",
   "packageManager": "pnpm@10.17.1",
   "engines": {
@@ -20,10 +24,10 @@
   "homepage": "https://github.com/nhathout/BROS#readme",
   "scripts": {
     "build": "pnpm -r build",
-    "dev": "pnpm --filter desktop-app dev",
+    "dev": "pnpm --filter ./apps/desktop-app dev",
     "lint": "pnpm -r lint",
     "test": "pnpm -r test",
-    "clean": "pnpm -r run clean",
+    "clean": "pnpm -r clean",
     "format": "pnpm -r format",
     "typecheck": "pnpm -r typecheck",
     "ci": "pnpm install --frozen-lockfile && pnpm -r test",
@@ -52,6 +56,7 @@
     "electron-builder": "^26.0.12",
     "typescript": "^5.9.2",
     "vite": "^7.1.7",
-    "semver": "^7.7.2"
+    "semver": "^7.7.2",
+    "rimraf": "^6.0.1"
   }
 }
