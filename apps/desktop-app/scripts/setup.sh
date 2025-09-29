@@ -1,6 +1,9 @@
 #!/usr/bin/env bash
-set -e
-corepack enable
-corepack prepare pnpm@9.12.0 --activate
-pnpm install
+set -euo pipefail
 
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+REPO_ROOT="$(cd "$SCRIPT_DIR/../../.." && pwd)"
+
+cd "$REPO_ROOT"
+
+"$REPO_ROOT/apps/desktop-app/scripts/bootstrap.sh" "$@"

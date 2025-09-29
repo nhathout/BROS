@@ -34,6 +34,8 @@ What the script does:
 - Ensures `nvm` is present and switches to Node `20.19.0`.
 - Installs pnpm `10.17.1` via Corepack (or npm fallback).
 - Runs `pnpm install -r` to hydrate all workspaces.
+- Builds the Electron main process and renderer bundles.
+- Launches the BROS desktop binary once the build finishes.
 - Adds `nvm use` to your shell profile (optional prompt) so new terminals select the correct Node version.
 
 Restart the shell if you are prompted so `pnpm` is on the `PATH`.

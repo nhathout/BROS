@@ -24,40 +24,32 @@
   },
   "homepage": "https://github.com/nhathout/BROS#readme",
   "scripts": {
-    "build": "pnpm -r build",
+    "bootstrap": "pnpm install -r",
+    "preinstall": "node -e \"const semver=require('semver'); if(!semver.satisfies(process.version, '20.19.x')) { console.error('\\n Wrong Node version: ' + process.version + '. Please run \\'nvm use\\'.\\n'); process.exit(1); }\"",
+    "build": "pnpm -r --filter @bros/runner build",
     "dev": "pnpm --filter ./apps/desktop-app dev",
     "lint": "pnpm -r lint",
     "test": "pnpm -r test",
     "clean": "pnpm -r clean",
     "format": "pnpm -r format",
     "typecheck": "pnpm -r typecheck",
-    "ci": "pnpm install --frozen-lockfile && pnpm -r test",
-    "bootstrap": "pnpm install -r",
-    "preinstall": "node -e \"const semver=require('semver'); if(!semver.satisfies(process.version, '20.19.x')) { console.error('\\n Wrong Node version: ' + process.version + '. Please run \\'nvm use\\'.\\n'); process.exit(1); }\""
-  },
-  "keywords": [
-    "ROS2",
-    "Electron",
-    "Blockly",
-    "Gazebo",
-    "Isaac",
-    "robotics",
-    "BROS"
-  ],
-  "author": "Noah Hathout nhathout@bu.edu>",
-  "dependencies": {
-    "electron": "^38.1.2",
-    "react": "^19.1.1",
-    "react-dom": "^19.1.1"
+    "ci": "pnpm install --frozen-lockfile && pnpm -r test"
   },
   "devDependencies": {
-    "@types/node": "^24.5.2",
-    "@types/react": "^19.1.13",
-    "@types/react-dom": "^19.1.9",
-    "electron-builder": "^26.0.12",
-    "typescript": "^5.9.2",
-    "vite": "^7.1.7",
+    "@types/dockerode": "^3.3.44",
+    "@types/keytar": "^4.4.2",
+    "@types/node": "^24.7.0",
+    "@types/node-fetch": "^2.6.13",
+    "rimraf": "^6.0.1",
     "semver": "^7.7.2",
-    "rimraf": "^6.0.1"
+    "typescript": "^5.9.2",
+    "vitest": "^2.1.9"
+  },
+  "dependencies": {
+    "dockerode": "^4.0.9",
+    "execa": "^9.6.0",
+    "keytar": "^7.9.0",
+    "node-fetch": "^3.3.2",
+    "zod": "^3.25.76"
   }
 }

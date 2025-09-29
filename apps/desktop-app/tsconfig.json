@@ -1,14 +1,9 @@
 {
   "extends": "../../tsconfig.json",
-  "compilerOptions": {
-    "outDir": "dist",
-    "rootDir": "src"
-  },
-  "include": ["src"],
+  "files": [],
   "references": [
-    { "path": "../../packages/shared" },
-    { "path": "../../packages/ui" },
-    { "path": "../../packages/services/runner" },
-    { "path": "../../packages/services/validation" }
-  ]
+    { "path": "./tsconfig.main.json" },
+    { "path": "./tsconfig.renderer.json" }
+]
+
 }

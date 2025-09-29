@@ -26,7 +26,15 @@ const irBridge: IRBridge = {
   validate: (ir: IR) => ipcRenderer.invoke("ir:validate", ir),
 };
 
+type OAuthResponse = { success: boolean; token?: string; error?: string };
+
+const electronBridge = {
+  login: (): Promise<OAuthResponse> => ipcRenderer.invoke("oauth-login"),
+  loginGoogle: (): Promise<OAuthResponse> => ipcRenderer.invoke("oauth-login-google"),
+};
+
 contextBridge.exposeInMainWorld("runner", runnerBridge);
 contextBridge.exposeInMainWorld("ir", irBridge);
+contextBridge.exposeInMainWorld("electron", electronBridge);
 
 console.info("[preload] runner + IR bridge loaded");

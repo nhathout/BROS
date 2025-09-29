@@ -1,13 +1,26 @@
+// apps/desktop-app/vite.config.ts
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
-import path from "path";
+import { fileURLToPath, URL } from "node:url";
 
 export default defineConfig({
-  root: path.resolve(__dirname),
+  root: "src/renderer", // 👈 where your index.html lives
   base: "./",
   plugins: [react()],
+  resolve: {
+    alias: {
+      "@": fileURLToPath(new URL("./", import.meta.url))
+    }
+  },
+  esbuild: {
+    jsx: "automatic"
+  },
   build: {
     outDir: "../../dist/renderer",
-    emptyOutDir: true,
+    emptyOutDir: true
   },
+  server: {
+    port: 5173,
+    strictPort: true
+  }
 });

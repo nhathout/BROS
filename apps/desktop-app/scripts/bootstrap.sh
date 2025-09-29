@@ -8,6 +8,7 @@ set -euo pipefail
 # 2. Uses Node 20.19.0
 # 3. Ensures pnpm is installed
 # 4. Installs dependencies (pnpm bootstrap)
+# 5. Verifies & installs Electron binary (install.js)
 # -------------------------------
 
 NODE_VERSION="20.19.0"
@@ -15,7 +16,7 @@ PNPM_VERSION="10.17.1"
 NVM_INSTALL_URL="https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh"
 AUTO_NVM_CONFIGURED=0
 
-echo "🚀 Bootstrapping BROS development environment..."
+echo "Bootstrapping BROS development environment..."
 
 # --- Install / Load NVM ---
 export NVM_DIR="${NVM_DIR:-$HOME/.nvm}"
@@ -26,7 +27,7 @@ if [ ! -s "$NVM_DIR/nvm.sh" ]; then
 fi
 
 if [ ! -s "$NVM_DIR/nvm.sh" ]; then
-  echo "❌ Unable to locate nvm installation at $NVM_DIR" >&2
+  echo "Unable to locate nvm installation at $NVM_DIR" >&2
   exit 1
 fi
 
@@ -65,7 +66,7 @@ if ! command -v pnpm &> /dev/null; then
     corepack enable
     corepack prepare pnpm@$PNPM_VERSION --activate
   else
-    echo "⚠️ corepack not found; installing pnpm globally via npm..."
+    echo "corepack not found; installing pnpm globally via npm..."
     npm install -g pnpm@$PNPM_VERSION
   fi
 fi
@@ -73,7 +74,7 @@ fi
 hash -r
 
 if ! command -v pnpm &> /dev/null; then
-  echo "❌ pnpm installation failed. Please install pnpm manually." >&2
+  echo "pnpm installation failed. Please install pnpm manually." >&2
   exit 1
 fi
 
@@ -81,10 +82,43 @@ fi
 echo "📦 Installing dependencies with pnpm..."
 pnpm install -r
 
-echo "✅ Bootstrap complete!"
-echo "👉 You can now run: pnpm dev (from apps/desktop-app)"
-if [ "$AUTO_NVM_CONFIGURED" -eq 1 ]; then
-  echo "ℹ️ Reload your shell (e.g. run 'source $ZSHRC_PATH') so pnpm is on PATH."
+# --- Ensure Electron binaries are installed (run install.js manually) ---
+ELECTRON_DIR="./apps/desktop-app/node_modules/.pnpm/electron@*/node_modules/electron"
+
+echo "Verifying Electron installation..."
+ELECTRON_PATH=$(ls -d $ELECTRON_DIR 2>/dev/null | head -n 1 || true)
+
+if [ -z "$ELECTRON_PATH" ]; then
+  echo "Electron package not found, reinstalling..."
+  pnpm --filter ./apps/desktop-app add electron@latest -D
+  ELECTRON_PATH=$(ls -d $ELECTRON_DIR 2>/dev/null | head -n 1 || true)
+fi
+
+if [ -n "$ELECTRON_PATH" ]; then
+  echo "Running Electron's install.js to fetch binaries..."
+  node "$ELECTRON_PATH/install.js" || {
+    echo "Electron install.js failed. Retrying via rebuild..."
+    (cd apps/desktop-app && pnpm rebuild electron)
+  }
 else
-  echo "ℹ️ If pnpm is unavailable, run: source \"$NVM_DIR/nvm.sh\" && nvm use $NODE_VERSION"
+  echo "Could not locate Electron directory after reinstall."
+  exit 1
+fi
+
+# --- Build Electron app (main + renderer) ---
+echo "Building Electron main process..."
+pnpm --filter ./apps/desktop-app build:main
+
+echo "Building renderer assets..."
+pnpm --filter ./apps/desktop-app build:renderer
+
+# --- Launch packaged Electron binary ---
+echo "Launching BROS desktop (Electron)…"
+pnpm --filter ./apps/desktop-app start
+
+echo "Bootstrap complete!"
+if [ "$AUTO_NVM_CONFIGURED" -eq 1 ]; then
+  echo "ℹReload your shell (e.g. run 'source $ZSHRC_PATH') so pnpm is on PATH next time."
+else
+  echo "ℹIf pnpm is unavailable, run: source \"$NVM_DIR/nvm.sh\" && nvm use $NODE_VERSION"
 fi
