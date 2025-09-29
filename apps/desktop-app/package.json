@@ -11,6 +11,7 @@
     "electron:prod": "cross-env NODE_ENV=production electron ./dist/main.js",
     "build:main": "tsc -p tsconfig.json --outDir dist",
     "build": "pnpm build:main && electron-builder",
+    "clean": "rimraf dist release",
     "postinstall": "node node_modules/electron/install.js"
   },
   "build": {
@@ -37,9 +38,11 @@
     "electron-builder": "^26.0.12",
     "ts-node": "^10.9.2",
     "typescript": "^5.9.2",
-    "vite": "^7.1.7"
+    "vite": "^7.1.7",
+    "rimraf": "^6.0.1"
   },
   "dependencies": {
+    "@bros/runner": "workspace:^",
     "react": "^19.1.1",
     "react-dom": "^19.1.1"
   }
