@@ -30,17 +30,35 @@ If prompted, reload your shell (e.g. `source ~/.zshrc`) so `pnpm` is available o
 
 ### 2. Run the desktop app in development
 
-From the repository root, launch the app with the workspace-aware script (this keeps dependencies in sync across packages):
+Build the runner package once (generates the JS consumed by Electron):
 
 ```bash
-pnpm --filter ./apps/desktop-app dev
+pnpm --filter @bros/runner build
 ```
 
-This starts Vite for the renderer and spawns Electron in development mode with hot reload.
+Compile the Electron main process once (or use the watch script for live rebuilds):
+
+```bash
+pnpm --filter ./apps/desktop-app build:main      # one-off compile
+# or
+pnpm --filter ./apps/desktop-app build:main:watch  # keep dist/main.js up to date
+```
+
+Then start the renderer and Electron in separate terminals:
+
+```bash
+# Terminal 1 – Vite dev server for the renderer
+pnpm --filter ./apps/desktop-app dev
+
+# Terminal 2 – Electron pointing at the dev server
+pnpm --filter ./apps/desktop-app electron:dev
+```
+
+Hot reload works for renderer assets. If you are not running `build:main:watch`, re-run `pnpm --filter ./apps/desktop-app build:main` whenever you touch `src/main.ts` (and then restart `electron:dev`).
 
 ### 3. ROS runner test (DevTools)
 
-With the app running, open the renderer DevTools console (`View → Toggle Developer Tools`) and execute:
+With the Electron window focused, open the renderer DevTools console (`View → Toggle Developer Tools`) and execute:
 
 ```js
 await window.runner.up("hello_ros");
@@ -49,7 +67,7 @@ await window.runner.exec("ros2 pkg list | head -n 5");
 await window.runner.down();
 ```
 
-You should see Docker bring up a container named `bros_hello_ros`, and new files appear under `~/BROS/Projects/hello_ros/` (`workspace/` plus `docker-compose.yml`). Re-running `up()` is idempotent.
+You should see Docker bring up a container named `bros_hello_ros`, and new files appear under `~/BROS/Projects/hello_ros/` (`workspace/` plus `docker-compose.yml`). Re-running `up()` is safe—compose and image pulls are idempotent. 
 
 ### 4. Build the workspace
 
@@ -69,7 +87,9 @@ pnpm --filter @bros/runner build # runner only
 pnpm --filter ./apps/desktop-app build:main # main process → dist/main.js
 ```
 
+If you only need the packaged app, run `pnpm -r build` and then launch it with `open apps/desktop-app/release/mac-arm64/BROS\ Desktop.app`.
+
 ## Additional Notes
 - The runner package relies on Docker and Docker Compose (CLI). Ensure Docker Desktop (or equivalent) is running before calling `window.runner.*` APIs.
-- Use `pnpm -r clean` to clear compiled output across packages; this now removes the desktop app's `dist/` and `release/` folders as well.
+- Use `pnpm -r clean` to clear compiled output across packages; this now removes the desktop app's `dist/` and `release/` folders as well. After cleaning, rebuild the runner (`pnpm --filter @bros/runner build`) before launching or packaging the Electron app.
 - The bootstrap script is idempotent—rerun it after toolchain updates to keep developers in sync.
