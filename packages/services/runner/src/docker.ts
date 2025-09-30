@@ -100,8 +100,14 @@ export async function execInContainer(
     throw error;
   }
 
+  const execCommand = [
+    "bash",
+    "-lc",
+    `. /ros_entrypoint.sh 2>/dev/null || true; ${command}`
+  ];
+
   const exec = await container.exec({
-    Cmd: ["bash", "-lc", command],
+    Cmd: execCommand,
     AttachStdout: true,
     AttachStderr: true,
     Tty: false
