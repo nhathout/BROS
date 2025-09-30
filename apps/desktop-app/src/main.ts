@@ -1,15 +1,20 @@
 import fs from "node:fs";
 import path from "node:path";
-import { app, BrowserWindow, ipcMain } from "electron";
+import { fileURLToPath } from "node:url";
+import electron from "electron";
 import { Runner } from "@bros/runner";
 
+const { app, BrowserWindow, ipcMain } = electron;
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
 function resolvePreloadPath(): string {
-  const localPreload = path.join(__dirname, "remote", "runner-bridge.js");
+  const localPreload = path.join(__dirname, "remote", "runner-bridge.cjs");
   if (fs.existsSync(localPreload)) {
     return localPreload;
   }
 
-  const fallbackPreload = path.join(app.getAppPath(), "dist", "remote", "runner-bridge.js");
+  const fallbackPreload = path.join(app.getAppPath(), "dist", "remote", "runner-bridge.cjs");
   if (fs.existsSync(fallbackPreload)) {
     return fallbackPreload;
   }
@@ -39,6 +44,8 @@ function createWindow() {
     height: 600,
     webPreferences: {
       preload: preloadPath,
+      contextIsolation: true,
+      nodeIntegration: false
     },
   });
 
@@ -58,7 +65,7 @@ app.whenReady().then(() => {
       throw new Error("runner:up requires a non-empty projectName.");
     }
     const instance = ensureRunner(projectName);
-    await instance.up((message) => console.info(`[runner] ${message}`));
+    await instance.up((message: string) => console.info(`[runner] ${message}`));
   });
 
   ipcMain.handle("runner:exec", async (_event, command: string) => {
@@ -68,14 +75,14 @@ app.whenReady().then(() => {
     if (!runner) {
       throw new Error("Runner not initialized. Call runner.up(projectName) first.");
     }
-    return runner.exec(command, (message) => console.info(`[runner] ${message}`));
+    return runner.exec(command, (message: string) => console.info(`[runner] ${message}`));
   });
 
   ipcMain.handle("runner:down", async () => {
     if (!runner) {
       return;
     }
-    await runner.down((message) => console.info(`[runner] ${message}`));
+    await runner.down((message: string) => console.info(`[runner] ${message}`));
     runner = null;
     runnerProjectKey = null;
   });

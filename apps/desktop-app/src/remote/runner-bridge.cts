@@ -14,3 +14,4 @@ const runnerBridge: RunnerBridge = {
 };
 
 contextBridge.exposeInMainWorld("runner", runnerBridge);
+console.info("[preload] runner bridge loaded");

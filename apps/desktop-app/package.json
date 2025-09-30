@@ -7,9 +7,10 @@
   "type": "module",
   "scripts": {
     "dev": "vite --config src/renderer/vite.config.ts",
-    "electron:dev": "cross-env NODE_ENV=development node --loader ts-node/esm src/main.ts",
+    "electron:dev": "cross-env NODE_ENV=development electron ./dist/main.js",
     "electron:prod": "cross-env NODE_ENV=production electron ./dist/main.js",
     "build:main": "tsc -p tsconfig.json --outDir dist",
+    "build:main:watch": "tsc -p tsconfig.json --outDir dist --watch",
     "build": "pnpm build:main && electron-builder",
     "clean": "rimraf dist release",
     "postinstall": "node node_modules/electron/install.js"
