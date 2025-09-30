@@ -58,6 +58,8 @@ Hot reload works for renderer assets. If you are not running `build:main:watch`,
 
 ### 3. ROS runner test (DevTools)
 
+Make sure Docker Desktop (or your Docker engine) is running and the CLI is on your `PATH`. From a terminal run `which docker` and `docker ps`—both must succeed before proceeding. On macOS you can install the CLI from Docker Desktop → Settings → General → Configure Shell Completions → Install Automatically.
+
 With the Electron window focused, open the renderer DevTools console (`View → Toggle Developer Tools`) and execute:
 
 ```js
@@ -90,6 +92,6 @@ pnpm --filter ./apps/desktop-app build:main # main process → dist/main.js
 If you only need the packaged app, run `pnpm -r build` and then launch it with `open apps/desktop-app/release/mac-arm64/BROS\ Desktop.app`.
 
 ## Additional Notes
-- The runner package relies on Docker and Docker Compose (CLI). Ensure Docker Desktop (or equivalent) is running before calling `window.runner.*` APIs.
+- The runner package relies on Docker and Docker Compose (CLI). Ensure Docker Desktop (or equivalent) is running and `docker ps` works (the CLI must be installed via Docker Desktop → Settings → Resources → CLI → “Install CLI tools”).
 - Use `pnpm -r clean` to clear compiled output across packages; this now removes the desktop app's `dist/` and `release/` folders as well. After cleaning, rebuild the runner (`pnpm --filter @bros/runner build`) before launching or packaging the Electron app.
 - The bootstrap script is idempotent—rerun it after toolchain updates to keep developers in sync.
