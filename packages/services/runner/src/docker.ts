@@ -103,7 +103,7 @@ export async function execInContainer(
   const execCommand = [
     "bash",
     "-lc",
-    `. /ros_entrypoint.sh 2>/dev/null || true; ${command}`
+    `. /ros_entrypoint.sh 2>/dev/null || true; (${command}) | cat`
   ];
 
   const exec = await container.exec({
