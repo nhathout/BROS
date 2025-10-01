@@ -16,8 +16,8 @@ The bootstrap script installs the required toolchain (nvm, Node 20.19.0, pnpm 10
 
 ```bash
 git clone https://github.com/nhathout/BROS.git
-cd BROS
-./apps/desktop-app/scripts/bootstrap.sh
+cd BROS/apps/desktop-app/
+./scripts/bootstrap.sh
 ```
 
 The script will:
