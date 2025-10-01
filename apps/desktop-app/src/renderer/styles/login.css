@@ -228,39 +228,6 @@ html, body {
   cursor: pointer;
 }
 
-/* Social Icons */
-.social-buttons {
-  display: flex;
-  justify-content: center;
-  gap: 1rem;
-  margin-top: 1rem;
-}
-
-.social-icon {
-  width: 48px;
-  height: 48px;
-  border-radius: 50%;
-  border: 1px solid #ddd;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: #fff;
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-
-.social-icon:hover {
-  background: #faaF00;
-}
-
-.social-icon.google {
-  color: #333;
-}
-
-.social-icon.github {
-  color: #333;
-}
-
 /* Header info */ 
 
 .register-text {
