@@ -17,7 +17,7 @@ function createWindow() {
       nodeIntegration: false,
     },
   });
-
+  mainWindow.maximize();
   mainWindow.loadURL("http://localhost:5173");
 }
 
