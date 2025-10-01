@@ -15,7 +15,6 @@
     "@fortawesome/fontawesome-free": "^7.0.1",
     "bootstrap": "^5.3.8",
     "dotenv": "^16.4.5",
-    "electron": "^38.1.2",
     "express": "^5.1.0",
     "framer-motion": "^12.23.22",
     "keytar": "^7.9.0",
@@ -37,6 +36,7 @@
     "@vitejs/plugin-react": "^5.0.4",
     "concurrently": "^9.2.1",
     "cross-env": "^10.1.0",
+    "electron": "^38.2.0",
     "electron-builder": "^26.0.12",
     "typescript": "^5.9.2",
     "vite": "^7.1.7"

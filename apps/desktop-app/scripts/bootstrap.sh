@@ -88,3 +88,22 @@ if [ "$AUTO_NVM_CONFIGURED" -eq 1 ]; then
 else
   echo "ℹ️ If pnpm is unavailable, run: source \"$NVM_DIR/nvm.sh\" && nvm use $NODE_VERSION"
 fi
+
+# --- Ensure Electron dist exists ---
+if [ -d "node_modules/electron/dist" ]; then
+  echo "✅ Electron binary already present in node_modules/electron/dist"
+elif [ -f "node_modules/electron/install.js" ]; then
+  echo "⚡ Running Electron install.js to fetch binary..."
+  node node_modules/electron/install.js || {
+    echo "❌ Electron install.js failed. Try re-running manually." >&2
+    exit 1
+  }
+  if [ -d "node_modules/electron/dist" ]; then
+    echo "✅ Electron binary successfully installed"
+  else
+    echo "❌ Electron binary missing even after install.js" >&2
+    exit 1
+  fi
+else
+  echo "ℹ️ Skipping Electron setup (no electron dependency yet)."
+fi
