@@ -11,8 +11,6 @@
     "forceConsistentCasingInFileNames": true,
     "baseUrl": ".",                        // allow absolute imports from root
     "paths": {
-      "@bros/shared/*": ["packages/shared/*"],   // example path alias
-      "@bros/ui/*": ["packages/ui/*"]
     },
     "outDir": "dist"                       // compiled output (per package)
   },

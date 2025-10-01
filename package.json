@@ -5,6 +5,7 @@
   "description": "BROS — Block ROS (Drag. Drop. Deploy.)",
   "workspaces": [
     "apps/*",
+    "packages/*",
     "packages/*/*"
   ],
   "license": "Apache-2.0",
