@@ -6,4 +6,4 @@ services:
     working_dir: /workspace
     tty: true
     volumes:
-      - "/Users/noahhathout/BROS/Projects/hello_ros/workspace:/workspace"
+      - "/Users/trieutran/BROS/Projects/hello_ros/workspace:/workspace"

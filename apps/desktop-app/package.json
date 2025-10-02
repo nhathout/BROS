@@ -6,16 +6,18 @@
   "main": "dist/main.js",
   "scripts": {
     "build:main": "tsc -p tsconfig.json --outDir dist",
-    "build:main:watch": "tsc -p tsconfig.json --outDir dist --watch",
     "build:preload": "tsc src/preload.ts --outDir dist",
     "build": "pnpm build:main && pnpm build:preload && electron-builder",
     "dev:renderer": "vite --config src/renderer/vite.config.ts",
     "dev:electron": "cross-env NODE_ENV=development pnpm build:main && pnpm build:preload && electron ./dist/main.js",
     "dev": "concurrently -n renderer,electron -c blue,green \"pnpm dev:renderer\" \"pnpm dev:electron\"",
+    "build:renderer:html": "cp src/renderer/index.html dist/renderer/index.html",
+    "build:main:watch": "tsc -p tsconfig.json --outDir dist --watch",
     "electron:dev": "cross-env NODE_ENV=development electron ./dist/main.js",
     "electron:prod": "cross-env NODE_ENV=production electron ./dist/main.js",
     "clean": "rimraf dist release",
     "postinstall": "node node_modules/electron/install.js"
+    
   },
   "build": {
     "appId": "com.bros.desktop",

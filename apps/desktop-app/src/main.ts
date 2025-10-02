@@ -47,24 +47,18 @@ function ensureRunner(projectName: string): Runner {
 
 // ---------------- Window ----------------
 function createWindow() {
-  const preloadPath = resolvePreloadPath();
   mainWindow = new BrowserWindow({
     width: 800,
     height: 600,
     webPreferences: {
-      preload: preloadPath,
+      preload: __dirname + "/preload.js",
       contextIsolation: true,
       nodeIntegration: false,
     },
   });
-
   mainWindow.maximize();
-
-  if (process.env.NODE_ENV === "development") {
-    mainWindow.loadURL("http://localhost:5173");
-  } else {
-    mainWindow.loadFile(path.join(__dirname, "../renderer/index.html"));
-  }
+  mainWindow.webContents.openDevTools();
+  mainWindow.loadURL("http://localhost:5173");
 }
 
 // ---------------- App Lifecycle ----------------
