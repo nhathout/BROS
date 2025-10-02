@@ -4,14 +4,13 @@ import AuthPage from "./pages/Auth";
 import { AnimatePresence, motion } from "framer-motion";
 import React from "react";
 
-function AnimatedRoutes({ handleLoginGitHub, handleLoginGoogle }: any) {
+function AnimatedRoutes({ handleLoginGitHub, handleLoginGoogle, handleRunnerTest }: any) {
   const location = useLocation();
 
   return (
     <div style={{ position: "relative", width: "100%", height: "100%" }}>
       <AnimatePresence mode="sync">
         <Routes location={location} key={location.pathname}>
-          {/* Landing Page */}
           <Route
             path="/"
             element={
@@ -20,19 +19,13 @@ function AnimatedRoutes({ handleLoginGitHub, handleLoginGoogle }: any) {
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
                 transition={{ duration: 0.6, ease: "easeInOut" }}
-                style={{
-                  position: "absolute",
-                  width: "100%",
-                  height: "100%",
-                  background: "#0c0c0c", // ✅ keep background consistent
-                }}
+                style={{ position: "absolute", width: "100%", height: "100%", background: "#0c0c0c" }}
               >
-                <LandingPage />
+                <LandingPage onRunnerTest={handleRunnerTest} />
               </motion.div>
             }
           />
 
-          {/* Auth Page */}
           <Route
             path="/auth"
             element={
@@ -41,12 +34,7 @@ function AnimatedRoutes({ handleLoginGitHub, handleLoginGoogle }: any) {
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
                 transition={{ duration: 0.6, ease: "easeInOut" }}
-                style={{
-                  position: "absolute",
-                  width: "100%",
-                  height: "100%",
-                  background: "#0c0c0c", // ✅ prevents white flash
-                }}
+                style={{ position: "absolute", width: "100%", height: "100%", background: "#0c0c0c" }}
               >
                 <AuthPage
                   onLoginGitHub={handleLoginGitHub}
@@ -60,6 +48,7 @@ function AnimatedRoutes({ handleLoginGitHub, handleLoginGoogle }: any) {
     </div>
   );
 }
+
 
 function App() {
   const handleLoginGitHub = async () => {
@@ -93,14 +82,30 @@ function App() {
       alert("Unexpected Google login error");
     }
   };
+  const handleRunnerTest = async () => {
+  try {
+    await window.runner.up("test-project");
+    const result = await window.runner.exec("ros2 --help");
+    console.log("Runner exec result:", result);
+
+    alert("✅ Runner executed! Check console for output");
+    await window.runner.down();
+  } catch (err) {
+    console.error("Runner error:", err);
+    alert("❌ Runner failed: " + (err as Error).message);
+  }
+};
+
 
   return (
     <BrowserRouter>
       <AnimatedRoutes
         handleLoginGitHub={handleLoginGitHub}
         handleLoginGoogle={handleLoginGoogle}
+        handleRunnerTest={handleRunnerTest}  
       />
     </BrowserRouter>
+
   );
 }
 

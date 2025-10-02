@@ -1,0 +1,9 @@
+services:
+  bros_testproject:
+    image: ros:humble
+    container_name: bros_testproject
+    command: bash -lc "sleep infinity"
+    working_dir: /workspace
+    tty: true
+    volumes:
+      - "/Users/trieutran/BROS/Projects/test-project/workspace:/workspace"

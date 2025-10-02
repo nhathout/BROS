@@ -27,3 +27,15 @@ pnpm-lock.yaml
 # root .gitignore
 .env
 apps/desktop-app/.env
+
+# Electron build artifacts
+release/
+*.dmg
+*.zip
+*.exe
+*.AppImage
+*.deb
+*.rpm
+
+# Just in case a specific build slipped in already
+BROS Desktop-*.zip

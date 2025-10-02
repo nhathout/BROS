@@ -2,7 +2,6 @@ import { BrowserWindow, session } from "electron";
 import keytar from "keytar";
 import fetch from "node-fetch";
 
-// TODO: move to env vars
 const CLIENT_ID = process.env.GITHUB_CLIENT_ID!;
 const CLIENT_SECRET = process.env.GITHUB_CLIENT_SECRET!;
 const REDIRECT_URI = "http://localhost/callback"; // must match GitHub OAuth app

@@ -57,11 +57,11 @@ function useTypewriter(text: string, speed = 50) {
   return displayed;
 }
 
+type LandingPageProps = {
+  onRunnerTest?: () => void;
+};
 
-
-
-
-const LandingPage: React.FC = () => {
+const LandingPage: React.FC<LandingPageProps> = ({ onRunnerTest }) => {
   const [current, setCurrent] = useState(0);
   const [fade, setFade] = useState<"in" | "out">("in");
   const videoRef = useRef<HTMLVideoElement | null>(null);
@@ -115,9 +115,28 @@ const LandingPage: React.FC = () => {
               <span className="blinkingCursor">_</span>
             </p>
 
-            <button className="continue-btn" onClick={() => navigate("/auth")}>
-              Continue →
-            </button>
+<button className="continue-btn" onClick={() => navigate("/auth")}>
+  Continue →
+</button>
+
+{process.env.NODE_ENV === "development" && onRunnerTest && (
+  <button
+    className="dev-btn"
+    style={{
+      marginTop: "1rem",
+      background: "#222",
+      color: "#0f0",
+      padding: "0.5rem 1rem",
+      border: "1px solid #0f0",
+      borderRadius: "6px",
+      cursor: "pointer",
+    }}
+    onClick={onRunnerTest}
+  >
+    🚀 Test Runner
+  </button>
+)}
+
           </div>
 
           <div className="dots">
