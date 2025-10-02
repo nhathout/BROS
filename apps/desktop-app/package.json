@@ -4,27 +4,27 @@
   "version": "0.1.0",
   "main": "dist/main.js",
   "scripts": {
+    "dev": "vite --config src/renderer/vite.config.ts",
+    "electron:dev": "cross-env NODE_ENV=development electron ./dist/main.js",
+    "electron:prod": "cross-env NODE_ENV=production electron ./dist/main.js",
     "build:main": "tsc -p tsconfig.json --outDir dist",
-    "build:preload": "tsc src/preload.ts --outDir dist",
-    "build": "pnpm build:main && pnpm build:preload && electron-builder",
-    "dev:renderer": "vite --config src/renderer/vite.config.ts",
-    "dev:electron": "cross-env NODE_ENV=development pnpm build:main && pnpm build:preload && electron ./dist/main.js",
-    "dev": "concurrently -n renderer,electron -c blue,green \"pnpm dev:renderer\" \"pnpm dev:electron\""
+    "build:main:watch": "tsc -p tsconfig.json --outDir dist --watch",
+    "build": "pnpm build:main && electron-builder",
+    "clean": "rimraf dist release",
+    "postinstall": "node node_modules/electron/install.js"
   },
-  "dependencies": {
-    "@fortawesome/fontawesome-free": "^7.0.1",
-    "bootstrap": "^5.3.8",
-    "dotenv": "^16.4.5",
-    "express": "^5.1.0",
-    "framer-motion": "^12.23.22",
-    "keytar": "^7.9.0",
-    "lottie-react": "^2.4.1",
-    "node-fetch": "^2.7.0",
-    "react": "^19.1.1",
-    "react-bootstrap": "^2.10.10",
-    "react-dom": "^19.1.1",
-    "react-icons": "^5.5.0",
-    "react-router-dom": "^7.9.3"
+  "build": {
+    "appId": "com.bros.desktop",
+    "productName": "BROS Desktop",
+    "directories": {
+      "output": "release"
+    },
+    "files": [
+      "dist/**/*",
+      "node_modules/**/*",
+      "package.json",
+      "!dist/linux-unpacked{,/**}"
+    ]
   },
   "devDependencies": {
     "@types/express": "^5.0.3",
@@ -39,6 +39,12 @@
     "electron": "^38.2.0",
     "electron-builder": "^26.0.12",
     "typescript": "^5.9.2",
-    "vite": "^7.1.7"
+    "vite": "^7.1.7",
+    "rimraf": "^6.0.1"
+  },
+  "dependencies": {
+    "@bros/runner": "workspace:^",
+    "react": "^19.1.1",
+    "react-dom": "^19.1.1"
   }
 }
