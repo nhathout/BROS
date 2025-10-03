@@ -47,11 +47,8 @@ pnpm --filter ./apps/desktop-app build:main:watch  # keep dist/main.js up to dat
 Then start the renderer and Electron in separate terminals:
 
 ```bash
-# Terminal 1 – Vite dev server for the renderer
+# Vite dev server for the renderer
 pnpm --filter ./apps/desktop-app dev
-
-# Terminal 2 – Electron pointing at the dev server
-pnpm --filter ./apps/desktop-app electron:dev
 ```
 
 Hot reload works for renderer assets. If you are not running `build:main:watch`, re-run `pnpm --filter ./apps/desktop-app build:main` whenever you touch `src/main.ts` (and then restart `electron:dev`).
