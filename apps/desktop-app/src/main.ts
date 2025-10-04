@@ -3,23 +3,27 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 import electron from "electron";
 import { Runner } from "@bros/runner";
+import { buildIR } from "@bros/ui";
+import { validateIR } from "@bros/validation";
+import type { BlockGraph } from "@bros/ui";
+import type { IR } from "@bros/shared";
 
 const { app, BrowserWindow, ipcMain } = electron;
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 function resolvePreloadPath(): string {
-  const localPreload = path.join(__dirname, "remote", "runner-bridge.cjs");
+  const localPreload = path.join(__dirname, "remote", "ir-bridge.cjs");
   if (fs.existsSync(localPreload)) {
     return localPreload;
   }
 
-  const fallbackPreload = path.join(app.getAppPath(), "dist", "remote", "runner-bridge.cjs");
+  const fallbackPreload = path.join(app.getAppPath(), "dist", "remote", "ir-bridge.cjs");
   if (fs.existsSync(fallbackPreload)) {
     return fallbackPreload;
   }
 
-  throw new Error("Cannot locate runner preload script. Run 'pnpm --filter ./apps/desktop-app build:main' first.");
+  throw new Error("Cannot locate IR preload script. Run 'pnpm --filter ./apps/desktop-app build:main' first.");
 }
 
 let runner: Runner | null = null;
@@ -85,6 +89,14 @@ app.whenReady().then(() => {
     await runner.down((message: string) => console.info(`[runner] ${message}`));
     runner = null;
     runnerProjectKey = null;
+  });
+
+  ipcMain.handle("ir:build", async (_event, graph: BlockGraph) => {
+    return buildIR(graph);
+  });
+
+  ipcMain.handle("ir:validate", async (_event, irData: IR) => {
+    return validateIR(irData);
   });
 
   app.on("activate", () => {

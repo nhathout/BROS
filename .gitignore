@@ -24,3 +24,6 @@ Thumbs.db
 # Generated
 pnpm-lock.yaml
 
+# Secrets / environment
+.env
+*.env

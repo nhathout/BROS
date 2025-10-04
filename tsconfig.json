@@ -11,6 +11,14 @@
     "forceConsistentCasingInFileNames": true,
     "baseUrl": ".",                        // allow absolute imports from root
     "paths": {
+      "@bros/shared": ["packages/shared/dist/index.d.ts"],
+      "@bros/shared/*": ["packages/shared/dist/*"],
+      "@bros/ui": ["packages/ui/dist/index.d.ts"],
+      "@bros/ui/*": ["packages/ui/dist/*"],
+      "@bros/validation": ["packages/services/validation/dist/index.d.ts"],
+      "@bros/validation/*": ["packages/services/validation/dist/*"],
+      "@bros/runner": ["packages/services/runner/dist/index.d.ts"],
+      "@bros/runner/*": ["packages/services/runner/dist/*"]
     },
     "outDir": "dist"                       // compiled output (per package)
   },

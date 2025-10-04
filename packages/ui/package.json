@@ -6,9 +6,21 @@
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "exports": {
-    ".": "./dist/index.js",
-    "./types/blocks": "./dist/types/blocks.js",
-    "./generators": "./dist/generators/index.js"
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "default": "./dist/index.js"
+    },
+    "./types/blocks": {
+      "types": "./dist/types/blocks.d.ts",
+      "import": "./dist/types/blocks.js",
+      "default": "./dist/types/blocks.js"
+    },
+    "./generators": {
+      "types": "./dist/generators/index.d.ts",
+      "import": "./dist/generators/index.js",
+      "default": "./dist/generators/index.js"
+    }
   },
   "files": [
     "dist"

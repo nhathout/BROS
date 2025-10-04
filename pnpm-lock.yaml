@@ -48,6 +48,12 @@ importers:
       '@bros/runner':
         specifier: workspace:^
         version: link:../../packages/services/runner
+      '@bros/ui':
+        specifier: workspace:^
+        version: link:../../packages/ui
+      '@bros/validation':
+        specifier: workspace:^
+        version: link:../../packages/services/validation
       react:
         specifier: ^19.1.1
         version: 19.1.1
@@ -113,6 +119,25 @@ importers:
       typescript:
         specifier: ^5.9.2
         version: 5.9.2
+
+  packages/services/validation:
+    dependencies:
+      '@bros/shared':
+        specifier: workspace:^
+        version: link:../../shared
+    devDependencies:
+      '@types/node':
+        specifier: ^24.5.2
+        version: 24.5.2
+      rimraf:
+        specifier: ^6.0.1
+        version: 6.0.1
+      typescript:
+        specifier: ^5.9.2
+        version: 5.9.2
+      vitest:
+        specifier: ^2.1.4
+        version: 2.1.9(@types/node@24.5.2)
 
   packages/shared:
     dependencies:

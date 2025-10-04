@@ -8,11 +8,21 @@ BROS (Block ROS) is an Electron desktop environment for building, simulating, an
 - Integrated simulation hooks (Gazebo, Isaac) and telemetry panels for rapid iteration.
 - Cross-platform desktop app distributed via Electron so teams share a single workflow.
 
-## Quick Start
+## Prerequisites
+- macOS (Apple Silicon or Intel) or Linux with Docker Desktop / Docker Engine installed and running.
+- `nvm` for Node version management (installed automatically by the bootstrap script if missing).
+- Node `20.19.x` and pnpm `10.x` (configured by the bootstrap script).
+
+Verify Docker CLI access before launching the app:
+
+```bash
+which docker
+docker ps
+```
+
+## Setup & Install
 
 ### 1. Bootstrap the workspace
-
-The bootstrap script installs the required toolchain (nvm, Node 20.19.0, pnpm 10.17.1) and pulls all workspace dependencies.
 
 ```bash
 git clone https://github.com/nhathout/BROS.git
@@ -20,47 +30,85 @@ cd BROS
 ./apps/desktop-app/scripts/bootstrap.sh
 ```
 
-The script will:
-- Install or load nvm and pin it to Node `20.19.0`.
-- Install pnpm `10.17.1` via corepack (or npm fallback).
-- Run `pnpm install -r` to hydrate every workspace package.
-- Optionally add an auto-`nvm use` snippet to your `~/.zshrc` so new shells pick up the correct Node version.
+What the script does:
+- Ensures `nvm` is present and switches to Node `20.19.0`.
+- Installs pnpm `10.17.1` via Corepack (or npm fallback).
+- Runs `pnpm install -r` to hydrate all workspaces.
+- Adds `nvm use` to your shell profile (optional prompt) so new terminals select the correct Node version.
 
-If prompted, reload your shell (e.g. `source ~/.zshrc`) so `pnpm` is available on the `PATH`.
+Restart the shell if you are prompted so `pnpm` is on the `PATH`.
 
-### 2. Run the desktop app in development
+### 2. Install / refresh dependencies manually
 
-Build the runner package once (generates the JS consumed by Electron):
+Any time dependencies change (for example when pulling new workspace packages) run:
 
 ```bash
+pnpm install
+```
+
+This command wires all local packages together (e.g. `@bros/ui`, `@bros/validation`) so TypeScript and the Electron main process can resolve them.
+
+## Build & Development Workflow
+
+### Full workspace build
+
+Compiles every workspace package (shared → UI → runner → validation → desktop app) and packages the desktop app via Electron Builder:
+
+```bash
+pnpm -r build
+```
+
+Use this when you need a production build or fresh type declarations everywhere. Artifacts end up in:
+- `packages/**/dist/` for shared libraries.
+- `apps/desktop-app/dist/` for the main process + preloads.
+- `apps/desktop-app/release/` for packaged Electron binaries.
+
+### Faster iterative builds
+
+For day-to-day development you can build only the pieces that change:
+
+```bash
+pnpm --filter @bros/shared build
+pnpm --filter @bros/ui build
 pnpm --filter @bros/runner build
+pnpm --filter @bros/validation build
+pnpm --filter ./apps/desktop-app build:main       # one-off compile
+# or keep it running:
+pnpm --filter ./apps/desktop-app build:main:watch
 ```
 
-Compile the Electron main process once (or use the watch script for live rebuilds):
+The order above guarantees that the Electron main process sees fresh declaration files.
+
+### Run the desktop app in dev mode
+
+Start the renderer and Electron in separate terminals (after running `build:main` at least once):
 
 ```bash
-pnpm --filter ./apps/desktop-app build:main      # one-off compile
-# or
-pnpm --filter ./apps/desktop-app build:main:watch  # keep dist/main.js up to date
-```
-
-Then start the renderer and Electron in separate terminals:
-
-```bash
-# Terminal 1 – Vite dev server for the renderer
+# Terminal 1 – Vite dev server for renderer assets
 pnpm --filter ./apps/desktop-app dev
 
-# Terminal 2 – Electron pointing at the dev server
+# Terminal 2 – Electron, pointing at the dev server
 pnpm --filter ./apps/desktop-app electron:dev
 ```
 
-Hot reload works for renderer assets. If you are not running `build:main:watch`, re-run `pnpm --filter ./apps/desktop-app build:main` whenever you touch `src/main.ts` (and then restart `electron:dev`).
+If you are not running `build:main:watch`, re-run `pnpm --filter ./apps/desktop-app build:main` whenever main-process or preload code changes, then restart `electron:dev`.
 
-### 3. ROS runner test (DevTools)
+## Using the Preload Bridges
 
-Make sure Docker Desktop (or your Docker engine) is running and the CLI is on your `PATH`. From a terminal run `which docker` and `docker ps`—both must succeed before proceeding. On macOS you can install the CLI from Docker Desktop → Settings → General → Configure Shell Completions → Install Automatically.
+The preload script exposes two namespaces:
 
-With the Electron window focused, open the renderer DevTools console (`View → Toggle Developer Tools`) and execute:
+```ts
+window.runner.up(projectName: string): Promise<void>
+window.runner.exec(command: string): Promise<{ stdout: string; stderr: string; code: number }>
+window.runner.down(): Promise<void>
+
+window.ir.build(graph: BlockGraph): Promise<{ ir: IR; issues: string[] }>
+window.ir.validate(ir: IR): Promise<{ errors: Issue[]; warnings: Issue[] }>
+```
+
+### Runner sanity check (DevTools)
+
+With Docker running, open DevTools (`View → Toggle Developer Tools`) and run:
 
 ```js
 await window.runner.up("hello_ros");
@@ -69,29 +117,75 @@ await window.runner.exec("ros2 pkg list | head -n 5");
 await window.runner.down();
 ```
 
-You should see Docker bring up a container named `bros_hello_ros`, and new files appear under `~/BROS/Projects/hello_ros/` (`workspace/` plus `docker-compose.yml`). Re-running `up()` is safe—compose and image pulls are idempotent. 
+You should see Docker bring up a container named `bros_hello_ros`, and new files appear under `~/BROS/Projects/hello_ros/`.
 
-### 4. Build the workspace
+### IR build + validation example
 
-To compile every workspace package (runner first, then the desktop app) and make distributables:
+```js
+const graph = {
+  blocks: [
+    { kind: "node", id: "talker", name: "talker" },
+    { kind: "publish", nodeId: "talker", topic: "/chatter", type: "std_msgs/msg/String" },
+  ],
+};
+
+const { ir, issues } = await window.ir.build(graph);
+const { errors, warnings } = await window.ir.validate(ir);
+console.log({ issues, errors, warnings });
+```
+
+## Testing
+
+- Validation rules (`@bros/validation`):
+
+  ```bash
+  pnpm --filter @bros/validation test
+  ```
+
+  Runs Vitest covering duplicate node detection, topic type mismatches, and orphan publishers/subscribers.
+
+- UI + shared packages (when tests are added):
+
+  ```bash
+  pnpm --filter @bros/ui test
+  pnpm --filter @bros/shared test
+  ```
+
+- Execute every registered suite at once:
+
+  ```bash
+  pnpm -r test
+  ```
+
+## Cleaning the Workspace
+
+Remove compiled artifacts everywhere:
+
+```bash
+pnpm -r clean
+```
+
+This clears `dist/`, `release/`, `tsconfig.tsbuildinfo`, and similar outputs for every package. After cleaning run a build to regenerate declarations:
 
 ```bash
 pnpm -r build
+# or rebuild selectively, e.g.
+pnpm --filter @bros/validation build
+pnpm --filter ./apps/desktop-app build:main
 ```
 
-- `@bros/runner` outputs ESM bundles to `packages/services/runner/dist/`.
-- Electron Builder places macOS artifacts in `apps/desktop-app/release/` (zip + dmg). 
-
-For a quicker cycle:
+To fully reset dependencies:
 
 ```bash
-pnpm --filter @bros/runner build # runner only
-pnpm --filter ./apps/desktop-app build:main # main process → dist/main.js
+pnpm store prune
+rm -rf node_modules
+pnpm install
 ```
 
-If you only need the packaged app, run `pnpm -r build` and then launch it with `open apps/desktop-app/release/mac-arm64/BROS\ Desktop.app`.
+## Notes & Tips
+- Keep Docker running whenever you interact with `window.runner.*` APIs.
+- Rerun `pnpm install` after pulling changes that add or rename workspace packages.
+- The bootstrap script is idempotent; rerun it after upgrading your shell or Node toolchain.
+- Electron Builder artifacts land in `apps/desktop-app/release/`; use `open` (macOS) or the file manager to launch packaged builds.
 
-## Additional Notes
-- The runner package relies on Docker and Docker Compose (CLI). Ensure Docker Desktop (or equivalent) is running and `docker ps` works (the CLI must be installed via Docker Desktop → Settings → Resources → CLI → “Install CLI tools”).
-- Use `pnpm -r clean` to clear compiled output across packages; this now removes the desktop app's `dist/` and `release/` folders as well. After cleaning, rebuild the runner (`pnpm --filter @bros/runner build`) before launching or packaging the Electron app.
-- The bootstrap script is idempotent—rerun it after toolchain updates to keep developers in sync.
+Happy hacking!
