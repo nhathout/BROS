@@ -69,6 +69,7 @@
     "@bros/runner": "workspace:*",
     "@bros/ui": "workspace:*",
     "@bros/validation": "workspace:*",
+    "bootstrap": "^5.3.8",
     "dotenv": "^17.2.3",
     "express": "^5.1.0",
     "framer-motion": "^11.12.0",
