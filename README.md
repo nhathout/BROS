@@ -192,5 +192,3 @@ pnpm install
 - Rerun `pnpm install` after pulling changes that add or rename workspace packages.
 - The bootstrap script is idempotent; rerun it after upgrading your shell or Node toolchain.
 - Electron Builder artifacts land in `apps/desktop-app/release/`; use `open` (macOS) or the file manager to launch packaged builds.
-
-Happy hacking!
