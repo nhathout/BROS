@@ -28,6 +28,9 @@ docker ps
 git clone https://github.com/nhathout/BROS.git
 cd BROS
 ./apps/desktop-app/scripts/bootstrap.sh
+cd apps/desktop-app/
+node node_modules/electron/install.js
+pnpm dev
 ```
 
 What the script does:
